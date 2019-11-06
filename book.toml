@@ -1,0 +1,6 @@
+[book]
+authors = ["Ihor Antonov"]
+language = "en"
+multilingual = false
+src = "src"
+title = "OpenSMTPD"
