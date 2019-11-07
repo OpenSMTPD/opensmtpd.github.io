@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: prepare branch
+    - name: prepare master branch
       run: |
         git branch -D master || true
         git checkout --orphan master
@@ -18,22 +18,21 @@ jobs:
     - name: download mdbook
       run: wget -O mdbook.tar.gz https://github.com/rust-lang/mdBook/releases/download/v0.3.4/mdbook-v0.3.4-x86_64-unknown-linux-gnu.tar.gz
     - name: extract mdbook
-      run: | 
-        tar xzvf ./mdbook.tar.gz
+      run: tar xzvf ./mdbook.tar.gz
     - name: build book
-      run: |
-        ./mdbook build --dest-dir site/
+      run: ./mdbook build --dest-dir site/
     - name: publish book
       run: |
         git remote -v
-        git config --local user.email "puffy@openbsd.org"
-        git config --local user.name "Puffy"
+        git config --local user.email "puffy-bot@opensmtpd.org"
+        git config --local user.name "Puffy Bot"
         git add site/
         git commit -m "site deploy: $(date '+%Y-%m-%d %H:%M')"
         git subtree split --branch master --prefix site/
         git checkout master
-        remote_repo="https://ngortheone:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+        remote_repo="https://${user}:${pass}@github.com/${GITHUB_REPOSITORY}.git"
         git push "${remote_repo}" HEAD:master --force
       env:
-        TOKEN: ${{ secrets.CI_TOKEN }}
+        user: ${{ secrets.CI_USER }}
+        pass: ${{ secrets.CI_PASS }}
           
